@@ -9,7 +9,7 @@ interface MovieSearchResult {
   image_url?: string;
 }
 
-const WATCHMODE_API_KEY = "6mNVDieWCHeGbQzE1O0RWYJxgIrfkyCkzxCyb9m7";
+const WATCHMODE_API_KEY = import.meta.env.VITE_WATCHMODE_API_KEY as string;
 export default function FetchDataSearch(){
 
   const [query, setQuery] = useState("");

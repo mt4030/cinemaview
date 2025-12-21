@@ -7,7 +7,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import type { Movie } from "@/util/type";
 
-const WATCHMODE_API_KEY = "6mNVDieWCHeGbQzE1O0RWYJxgIrfkyCkzxCyb9m7";
+const WATCHMODE_API_KEY = import.meta.env.VITE_WATCHMODE_API_KEY as string;
 const BASE_URL = "https://api.watchmode.com/v1";
 
 export default function MovieDetail() {
