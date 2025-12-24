@@ -1,43 +1,45 @@
 CinemaView — Movie & TV Discovery App
 
-CinemaView is a modern movie and TV show discovery web app built with React, TypeScript, and the Watchmode API.
-It allows users to explore trending content, search titles with autocomplete, view detailed movie pages, and manage personal lists like favorites, bookmarks, and watch history.
+CinemaView is a modern movie and TV show discovery web app built with React, TypeScript, and the Watchmode API. It lets users explore trending content, search titles with autocomplete, view detailed movie pages, and manage personal lists like favorites, bookmarks, and watch history.
 
-This project focuses on real-world frontend patterns: API caching, debounced search, global state management, persistent storage, and clean UI composition.
+This project emphasizes real-world frontend patterns: API caching, debounced search, global state management, persistent storage, and clean UI composition.
 
 🚀 Features
-
 🔍 Smart Search with Autocomplete
 
-Debounced API requests
+Debounced API requests to reduce network calls
 
-Minimum character threshold
+Minimum 3-character threshold for searches
 
-Click-outside handling
+Click-outside handling for suggestion dropdown
 
-Loading & empty states
+Loading & empty states with user-friendly feedback
 
 📈 Trending Movies & TV Shows
 
-Cached API results (30-day TTL)
+Parallel fetching of movies and TV series
 
-Parallel data fetching
+Cached API results with TanStack Query v5
 
-Optimized re-renders using context
+Persistent cache via PersistQueryClientProvider (localStorage)
+
+Optimized re-renders using React Context API
 
 🎞️ Detailed Movie Pages
 
-Full metadata (rating, runtime, genres, plot)
+Full metadata: rating, runtime, genres, plot overview
 
 Trailer & IMDb links
 
-Cached + fallback fetching logic
+Cached + fallback fetching logic for fast loading
 
 ❤️ Favorites & Watchlist
 
-Persisted with localStorage
+Persisted using localStorage
 
 Toggle logic with deduplication
+
+Accessible globally via context
 
 🕘 Viewing History
 
@@ -45,15 +47,17 @@ Automatically tracks visited titles
 
 Prevents duplicates
 
+Stored persistently for quick revisit
+
 🔐 Protected Routes
 
-Simple authentication simulation
+Simulated authentication
 
 User dashboard access control
 
 🎨 Responsive UI
 
-Tailwind CSS
+Tailwind CSS for modern styling
 
 Carousel-based browsing
 
@@ -65,27 +69,29 @@ Frontend: React + TypeScript
 
 Routing: React Router v6
 
-State Management: React Context API
+State Management: React Context API + TanStack Query v5
 
 Styling: Tailwind CSS
 
-API: Watchmode API
-
 HTTP Client: Axios
 
-Persistence: LocalStorage
+API: Watchmode API
+
+Persistence: LocalStorage with TanStack Query cache
 
 Build Tool: Vite
 
 🏗️ Architecture Highlights
 
-API response caching to reduce network calls
+TanStack Query v5 for caching, server-state management, and parallel fetching
+
+Persistent query cache using createAsyncStoragePersister
 
 Separation of UI, data logic, and state
 
 Reusable components (Carousel, MovieCard, Search)
 
-Graceful loading & error handling
+Graceful loading and error handling
 
 Scroll restoration on route change
 
@@ -104,13 +110,13 @@ VITE_WATCHMODE_API_KEY=your_api_key_here
 
 Real authentication (JWT / OAuth)
 
-Backend integration
+Backend integration for user data
 
-Pagination & infinite scroll
+Pagination & infinite scroll for large lists
 
-Server-side caching
+Server-side caching for API calls
 
-Accessibility improvements
+Accessibility improvements (ARIA, keyboard nav)
 
 Unit & integration tests
 
