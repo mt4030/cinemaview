@@ -6,15 +6,14 @@ import { useMcontext } from "@/context/trendingcontext"
 import Loading from "./loading"
 
 export default function Hero() {
-  const { movieCache,loading, error,favorite,history } = useMcontext()
+  const { movies,loading,favorite,history } = useMcontext()
 
 
-const trendingTV = Object.values(movieCache).filter(m => m.type === 'tv_series');
-  const trendingMovies=Object.values(movieCache).filter(m => m.type === 'movie');
+const trendingTV = Object.values(movies).filter(m => m.type === 'tv_series');
+  const trendingMovies=Object.values(movies).filter(m => m.type === 'movie');
 
   if (loading) return<Loading/>
-  if (error) return <p>{error}</p>
-if (!Object.keys(movieCache).length) return <Loading />;
+if (!Object.keys(movies).length) return <Loading />;
   return (
     <>
     <section className="relative hero-img h-125 bg-cover bg-center">

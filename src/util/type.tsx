@@ -21,27 +21,21 @@ export interface Movie {
 
 
 
-
 export type MovieCache = Record<number, Movie>;
 
 
 
 export interface MovieContextType {
-  trending: number[];
+  movies: Movie[]; // trending movies details, not just IDs
   favorite: Movie[];
   bookmark: Movie[];
-  movieCache: MovieCache;
-  history: Movie[]; // added type
-
-  loading: boolean;
-  error: string | null;
-  FakeAuthentication:() =>void;
-  FakeLogOut:() =>void;
-  fakeAuth:boolean;
+  history: Movie[];
+  loading: boolean; // derived from useQuery (idsLoading)
+  error: boolean | unknown; // can be boolean or the error returned by useQuery
+  fakeAuth: boolean;
+  FakeAuthentication: () => void;
+  FakeLogOut: () => void;
   ToggleFavorite: (item: Movie) => void;
   ToggleBookmark: (item: Movie) => void;
-  addMovieToCache: (movie: Movie) => void;
-  setHistory: React.Dispatch<React.SetStateAction<Movie[]>>; // added type
-
-  setMovieCache: React.Dispatch<React.SetStateAction<MovieCache>>;
+  setHistory: React.Dispatch<React.SetStateAction<Movie[]>>;
 }

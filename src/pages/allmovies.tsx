@@ -5,9 +5,9 @@ import { Link } from "react-router-dom"
 import { useMcontext } from "@/context/trendingcontext"
 
 export default function AllMovies(){
-  const { movieCache } = useMcontext()
+  const { movies } = useMcontext()
 
-  const trendingMovies=Object.values(movieCache).filter(m => m.type === 'movie');
+  const trendingMovies=Object.values(movies).filter(m => m.type === 'movie');
 
 return(
     <>

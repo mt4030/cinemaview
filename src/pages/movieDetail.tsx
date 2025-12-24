@@ -11,11 +11,13 @@ const WATCHMODE_API_KEY = import.meta.env.VITE_WATCHMODE_API_KEY as string;
 const BASE_URL = "https://api.watchmode.com/v1";
 
 export default function MovieDetail() {
-  const { movieCache, addMovieToCache, setHistory } = useMcontext();
+  const { movies, setHistory } = useMcontext();
   const { id } = useParams<{ id: string }>();
   const [movie, setMovie] = useState<Movie | null>(null);
-
-  const typedMovieCache: Record<string, Movie> = movieCache;
+////?????????????????
+const typedMovieCache: Record<string, Movie> = Object.fromEntries(
+  movies.map(movie => [movie.id.toString(), movie])
+);
 
   const updateHistory = (m: Movie) => {
     const rawStored = localStorage.getItem("history");
@@ -34,16 +36,16 @@ export default function MovieDetail() {
 
     let movieToUse: Movie | null = null;
 
-    // 1️⃣ Check localStorage "history"
+    // Check localStorage "history"
     const rawStored = localStorage.getItem("history");
     const storedHistory: Movie[] = rawStored ? JSON.parse(rawStored) : [];
     const movieInHistory = storedHistory.find(m => String(m.id) === id);
     if (movieInHistory) movieToUse = movieInHistory;
 
-    // 2️⃣ Check context cache
+    // Check context cache
     if (!movieToUse && typedMovieCache[id]) movieToUse = typedMovieCache[id];
 
-    // 3️⃣ Fetch from API
+    // Fetch from API
 if (!movieToUse) {
   try {
     const res = await axios.get(`${BASE_URL}/title/${id}/details`, {
@@ -51,15 +53,11 @@ if (!movieToUse) {
     });
     movieToUse = res.data;
 
-    if (movieToUse) {
-      addMovieToCache(movieToUse);
-    }
   } catch (e) {
     console.error("Failed to fetch movie:", e);
     return;
   }
 }
-
 
     if (movieToUse) {
       setMovie(movieToUse);
@@ -76,7 +74,7 @@ if (!movieToUse) {
 
   return (
     <section className="bg-gray-900 min-h-screen text-white">
-      {/* HERO */}
+   
       <div className="relative">
         <div
           className="h-[60vh] bg-cover bg-center"

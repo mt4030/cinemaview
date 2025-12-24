@@ -1,71 +1,36 @@
 
-import axios from "axios"
+import {useQuery} from '@tanstack/react-query'
 import { useEffect,useState,useRef } from "react"
 import { Link } from "react-router-dom";
-interface MovieSearchResult {
-  id: number;
-  name?: string;
-  year?: number;
-  image_url?: string;
-}
-
-const WATCHMODE_API_KEY = import.meta.env.VITE_WATCHMODE_API_KEY as string;
+import { fetchSearched } from '@/util/http';
 export default function FetchDataSearch(){
+    const [query, setQuery] = useState("");
+const {data,isPending ,isError}=  useQuery({
+  ///“I will call your queryFn with the queryKey that you provided.”
+  queryKey:['search',query]
+  ,
+  queryFn:({queryKey})=>{
+    const[,query]=queryKey
+    return fetchSearched(query)
+  },
+  enabled: query.length >= 3
 
-  const [query, setQuery] = useState("");
-  const [autocompleteResults, setAutocompleteResults] = useState<MovieSearchResult[]>([]);
+})
+
+
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [noResults, setNoResults] = useState(false);
  const wrapperRef = useRef<HTMLDivElement>(null);
-const fetchSearched=async()=>{
-setLoading(true);
-try{
-const response = await axios.get(
-          "https://api.watchmode.com/v1/autocomplete-search/",
-          {
-            params: {
-              apiKey: WATCHMODE_API_KEY,
-              search_value: query,
-              search_type: 1, 
-            },
-          }
-        );
-const results=response.data.results ||[]
-setAutocompleteResults(results)
-setShowSuggestions(results.length > 0);
-setNoResults(results.length === 0);
-}catch(e){
 
-setShowSuggestions(false)   
-setNoResults(false)
-}finally{
-setLoading(false)
-}
 
-}
 
-useEffect(()=>{
-      if (query.length < 3) {
-    setAutocompleteResults([]);
-    setShowSuggestions(false);
-    setNoResults(false);
-    return;
-  }
-  const timer = setTimeout(() => {
-    fetchSearched()
- }, 500);
-
-return () => clearTimeout(timer);
-
-},[query])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (query.length < 3) return;
   };
 
-//////clear sugg
+//////clear suggestion
 useEffect(() => {
   const handleClickOutside = (event: MouseEvent) => {
     if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
@@ -77,6 +42,14 @@ useEffect(() => {
   return () => document.removeEventListener("mousedown", handleClickOutside);
 }, []);
 
+useEffect(() => {
+  if (data && data.length > 0) {
+    setShowSuggestions(true)
+    setNoResults(false)
+  } else if (data && data.length === 0) {
+    setNoResults(true)
+  }
+}, [data])
 
 
 
@@ -135,9 +108,9 @@ return(
       </form>
 
       {/* Autocomplete suggestions */}
-      {showSuggestions && autocompleteResults.length > 0 && (
+      {showSuggestions && data.length > 0 && (
         <ul className="mt-2 w-full max-h-72 overflow-y-auto grid grid-cols-2 gap-4 px-7">
-          {autocompleteResults.map((item) => (
+          {data.map((item:any) => (
             <Link to={`title/${item.id}`}>
             <li
               key={item.id}
@@ -156,9 +129,9 @@ return(
         </ul>
       )}
 
-     
+      {isError && <p className="px-7 mt-2">couldint find the title</p>}
 
-      {loading && <p className="px-7 mt-2">Loading...</p>}
+      {!isPending && <p className="px-7 mt-2">Loading...</p>}
     </div>
 )
     
