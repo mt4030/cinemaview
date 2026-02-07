@@ -10,7 +10,7 @@ declare const process: {
 // Remove this line completely:
 // import type { Context } from "@netlify/functions";
 
-export default async (req: Request, context: any) => {   // ← change to :any
+export default async (req:Request) => {   // ← change to :any
   const url = new URL(req.url);
   const query = url.searchParams.get("q")?.trim();
 

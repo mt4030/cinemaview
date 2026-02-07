@@ -8,7 +8,7 @@ declare const process: {
 
 // netlify/functions/trending.ts
 
-export default async (req: Request, context: any) => {  // keep signature, but mark as unused if needed
+export default async () => {  // keep signature, but mark as unused if needed
   try {
     const apiKey = process.env.WATCHMODE_API_KEY;
 
