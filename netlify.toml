@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"          # or vite build / whatever your build command is
+  publish = "dist"                    # or build — your output folder
+
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
+
+[functions]
+  directory = "netlify/functions"     # or "functions" if that's where they are

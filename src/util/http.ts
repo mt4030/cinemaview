@@ -1,68 +1,40 @@
-////from data search
-import axios from "axios"
-const WATCHMODE_API_KEY = import.meta.env.VITE_WATCHMODE_API_KEY ;
-const BASE_URL = "https://api.watchmode.com/v1";
-import type { Movie} from "@/util/type";
-/////search
-export const fetchSearched=async(query:string)=>{
+import type { Movie } from "./type";
 
-try{
-const response = await axios.get(
-          "https://api.watchmode.com/v1/autocomplete-search/",
-          {
-            params: {
-              apiKey: WATCHMODE_API_KEY,
-              search_value: query,
-              search_type: 1, 
-            },
-          }
-        );
-return response.data.results ||[]
+const API = {
+  trending: "/.netlify/functions/trending",
+  search: (q: string) => `/.netlify/functions/search?q=${encodeURIComponent(q)}`,
+  details: (id: number | string) => `/.netlify/functions/details/${id}`,
+};
 
-}catch(e){
-console.log(e)
+export const fetchTrending = async (): Promise<number[]> => {
+  try {
+    const res = await fetch(API.trending, { cache: "force-cache" });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+};
 
-}
+export const fetchSearch = async (query: string): Promise<any[]> => {
+  if (query.length < 2) return [];
+  try {
+    const res = await fetch(API.search(query));
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+};
 
-}
-
-///fetching trending
- export const fetchTrending = async () => {
-//fetch trending
-      const [moviesRes, tvRes] = await Promise.all([
-        axios.get(`${BASE_URL}/list-titles`, {
-          params: {
-            apiKey: WATCHMODE_API_KEY,
-            types: "movie",
-            sort_by: "popularity_desc",
-            limit: 15,
-          },
-        }),
-        axios.get(`${BASE_URL}/list-titles`, {
-          params: {
-            apiKey: WATCHMODE_API_KEY,
-            types: "tv_series",
-            sort_by: "popularity_desc",
-            limit: 15,
-          },
-        }),
-      ]);
-//save just name and id to then pass to fetch detail
-      const movieIds: number[] = moviesRes.data.titles.map(
-        (m: { id: number }) => m.id);
-      const tvIds: number[] = tvRes.data.titles.map(
-        (t: { id: number }) => t.id);
-///returns id
-      return  [...movieIds, ...tvIds];
-      
-  };
-
-
-
-////fetching detail
- export const fetchDetails = async (id: number): Promise<Movie> => {
-    const res = await axios.get(`${BASE_URL}/title/${id}/details`, {
-      params: { apiKey: WATCHMODE_API_KEY, },
+export const fetchDetails = async (id: number): Promise<Movie | null> => {
+  try {
+    const res = await fetch(API.details(id), {
+  // ISR-like: revalidate every 6 hours
     });
-    return res.data;
-  };
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+};
